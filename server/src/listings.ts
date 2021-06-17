@@ -8,8 +8,8 @@ interface Listing {
   numOfBeds: number;
   numOfBaths: number;
   rating: number;
-}
 
+}
 
 // array of Listing object
 export const listings: Listing[] = [
@@ -23,7 +23,7 @@ export const listings: Listing[] = [
     numOfGuests: 2,
     numOfBeds: 2,
     numOfBaths: 2,
-    rating: 5,
+    rating: 5
   },
   {
     id: "002",

@@ -8,9 +8,15 @@ export interface Listing {
   price: number;
   numOfGuests: number;
   numOfBeds: number;
+  numOfBaths:number;
   rating: number;
 }
 
 export interface Database {
   listings: Collection<Listing>;
 }
+
+
+export type EmptyObject = {
+  [K in any]: never;
+};

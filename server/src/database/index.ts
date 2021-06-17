@@ -12,8 +12,7 @@ export const connectDatabase = async (): Promise<Database> => {
     useUnifiedTopology: true,
   });
 
-  //get the the database
-
+  //get the the database name
   const db = client.db("main");
 
   return {
