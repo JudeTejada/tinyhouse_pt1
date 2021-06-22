@@ -7,7 +7,7 @@ import { connectDatabase } from "./database";
 import { typeDefs, resolvers } from "./graphql";
 
 
-
+ 
 const mount = async (app: Application) => {
   const db = await connectDatabase();
   const server = new ApolloServer({
