@@ -22,6 +22,7 @@ export const ListingResolvers: IResolvers = {
       { id }: { id: string },
       { db }: { db: Database }
     ): Promise<Listing> => {
+      
       const deleteResult = await db.listings.findOneAndDelete({
         _id: new ObjectId(id)
       });
