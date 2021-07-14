@@ -1,25 +1,25 @@
-import { gql } from "apollo-server-express";
+import { gql } from 'apollo-server-express';
 
-
-//setup a schema 
+//setup a schema
 export const typeDefs = gql`
-  type Listing {
+  type Viewer {
     id: ID
-    title: String
-    image: String
-    address: String
-    price: Int
-    numOfGuests: Int
-    numOfBeds: Int
-    numOfBaths: Int
-    rating: Int
+    token: String
+    avatar: String
+    hasWallet: Boolean
+    didRequest: Boolean!
   }
 
-  type Query{
-      listings: [Listing!]!
+  input LogInInput {
+    code: String
+  }
+
+  type Query {
+    authUrl: String!
   }
 
   type Mutation {
-      deleteListing(id: ID!): Listing!
+    logIn(input: LogInInput): Viewer!
+    logOut: Viewer!
   }
 `;
