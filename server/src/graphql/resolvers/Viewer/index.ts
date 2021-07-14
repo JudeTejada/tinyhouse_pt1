@@ -114,12 +114,12 @@ export const viewerResolvers: IResolvers = {
           avatar: viewer.avatar,
           walletId: viewer.walletId,
           didRequest: true
-        };
+        }; 
       } catch (err) {
         throw new Error(`failed to log in: ${err}`);
       }
     },
-    logOut: () => {
+    logOut: (): Viewer => {
       try {
         return { didRequest: true };
       } catch (err) {
