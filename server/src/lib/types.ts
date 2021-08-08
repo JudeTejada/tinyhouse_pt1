@@ -62,6 +62,10 @@ export interface User {
   listings: ObjectId[];
 }
 
+
+
+
+
 export interface Database {
   listings: Collection<Listing>;
   users: Collection<User>;
