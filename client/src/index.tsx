@@ -1,7 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
-import ApolloClient from 'apollo-boost';
-import { ApolloProvider, useMutation } from 'react-apollo';
+import {
+  ApolloClient,
+  ApolloProvider,
+  createHttpLink,
+  InMemoryCache,
+  useMutation
+} from '@apollo/client';
+import { setContext } from '@apollo/client/link/context';
+
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { Layout, Affix, Spin } from 'antd';
 import {
@@ -27,17 +34,25 @@ import {
 } from './lib/graphql/mutations/LogIn/__generated__/LogIn';
 import reportWebVitals from './reportWebVitals';
 
-const client = new ApolloClient({
-  uri: '/api',
-  request: async operation => {
-    const token = sessionStorage.getItem('token');
+const httpLink = createHttpLink({
+  uri: '/api'
+});
 
-    operation.setContext({
-      headers: {
-        "X-CSRF-TOKEN": token || ''
-      }
-    });
-  }
+const authLink = setContext((_, { headers }) => {
+  const token = sessionStorage.getItem('token');
+
+  console.log('token: ' + token);
+  return {
+    headers: {
+      ...headers,
+      'X-CSRF-TOKEN': token || ''
+    }
+  };
+});
+
+const client = new ApolloClient({
+  link: authLink.concat(httpLink),
+  cache: new InMemoryCache()
 });
 
 const initialViewer: Viewer = {

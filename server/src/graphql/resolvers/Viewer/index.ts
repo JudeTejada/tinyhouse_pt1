@@ -71,6 +71,8 @@ const logInViaGoogle = async (
 
   let viewer = updateRes.value;
 
+
+  // if no viewer which mewans new account
   if (!viewer) {
     const insertResult = await db.users.insertOne({
       _id: userId,
@@ -132,7 +134,7 @@ export const viewerResolvers: IResolvers = {
     ): Promise<Viewer> => {
       try {
         const code = input ? input.code : null;
-        const token = crypto.randomBytes(16).toString();
+        const token = crypto.randomBytes(16).toString('hex');
 
         // if newly signed in  then logInViaGoogle
         // if user is already signed in login through cookie and use the id that we had set

@@ -1,6 +1,7 @@
 import { Button, Menu, Avatar } from 'antd';
 import { Link } from 'react-router-dom';
-import { useMutation } from '@apollo/react-hooks';
+import {  useMutation } from '@apollo/client';
+
 
 import { LOG_OUT } from '../../../../lib/graphql/mutations/';
 import { LogOut as LogOutData } from '../../../../lib/graphql/mutations/LogOut/__generated__/LogOut';
@@ -25,8 +26,8 @@ export const MenuItems = ({ viewer, setViewer }: Props) => {
     onCompleted: data => {
       if (data && data.logOut) {
         setViewer(data.logOut);
-        displaySuccessNotification("You've succesfully logged out!");
         sessionStorage.removeItem('token');
+        displaySuccessNotification("You've succesfully logged out!");
       }
     },
     onError: data => {

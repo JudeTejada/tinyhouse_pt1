@@ -1,6 +1,6 @@
 import { Card, Layout, Typography, Spin } from 'antd';
 import { Redirect } from 'react-router';
-import { useApolloClient, useMutation } from '@apollo/react-hooks';
+import { useApolloClient, useMutation } from '@apollo/client';
 import { Viewer } from '../../lib/types';
 import { AUTH_URL } from '../../lib/graphql/queries/AuthUrl/';
 import { AuthUrl as AuthUrlData } from '../../lib/graphql/queries/AuthUrl/__generated__/AuthUrl';
@@ -35,7 +35,6 @@ export const Login = ({ setViewer }: Props) => {
         if (data && data.logIn && data.logIn.token) {
           setViewer(data.logIn);
           sessionStorage.setItem('token', data.logIn.token);
-
           displaySuccessNotification('succesfully, logged in.');
         }
       }
