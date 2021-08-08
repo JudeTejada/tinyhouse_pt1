@@ -15,6 +15,11 @@ export const typeDefs = gql`
     result: [Booking!]!
   }
 
+  enum ListingType {
+    APARTMENT
+    HOUSE
+  }
+
   type Listing {
     id: ID!
     title: String!
@@ -39,10 +44,10 @@ export const typeDefs = gql`
     name: String!
     avatar: String!
     contact: String!
-    hasWallet: boolean!
+    hasWallet: Boolean!
     income: Int
     bookings(limit: Int!, page: Int!): Bookings
-    listings: Listings!
+    listings(limit: Int!, page: Int!): Listings
   }
 
   type Viewer {
