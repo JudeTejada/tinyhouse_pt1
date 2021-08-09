@@ -27,6 +27,7 @@ export const typeDefs = gql`
     image: String!
     host: User!
     type: ListingType!
+    address: String!
     city: String!
     bookings(limit: Int!, page: Int!): Bookings
     bookingIndex: String!
