@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import ReactDOM from 'react-dom';
+import { render } from 'react-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import {
   ApolloClient,
   ApolloProvider,
@@ -8,31 +9,25 @@ import {
   useMutation
 } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
-
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import { Layout, Affix, Spin } from 'antd';
+import { Affix, Layout, Spin } from 'antd';
 import {
+  AppHeader,
   Home,
   Host,
   Listing,
   Listings,
-  NotFound,
-  User,
   Login,
-  AppHeader
+  NotFound,
+  User
 } from './section';
-import { AppHeaderSkeleton, ErrorBanner } from './lib/components';
-
-import './styles/index.css';
-
-import { Viewer } from './lib/types';
-
-import { LOG_IN } from './lib/graphql/mutations/';
+import { LOG_IN } from './lib/graphql/mutations/LogIn';
 import {
   LogIn as LogInData,
   LogInVariables
 } from './lib/graphql/mutations/LogIn/__generated__/LogIn';
-import reportWebVitals from './reportWebVitals';
+import { Viewer } from './lib/types';
+import './styles/index.css';
+import { ErrorBanner, AppHeaderSkeleton } from './lib/components/';
 
 const httpLink = createHttpLink({
   uri: '/api'
@@ -40,8 +35,6 @@ const httpLink = createHttpLink({
 
 const authLink = setContext((_, { headers }) => {
   const token = sessionStorage.getItem('token');
-
-  console.log('token: ' + token);
   return {
     headers: {
       ...headers,
@@ -63,24 +56,23 @@ const initialViewer: Viewer = {
   didRequest: false
 };
 
-const App = () => {
+function App() {
   const [viewer, setViewer] = useState<Viewer>(initialViewer);
   const [logIn, { error }] = useMutation<LogInData, LogInVariables>(LOG_IN, {
     onCompleted: data => {
-      if (data && data.logIn) setViewer(data.logIn);
-
-      if (data.logIn.token) {
-        sessionStorage.setItem('token', data.logIn.token);
+      if (data && data.logIn) {
+        setViewer(data.logIn);
+        if (data.logIn.token) {
+          sessionStorage.setItem('token', data.logIn.token);
+        }
       } else {
         sessionStorage.removeItem('token');
       }
     }
   });
-
-  const logInref = useRef(logIn);
-
+  const logInRef = useRef(logIn);
   useEffect(() => {
-    logInref.current();
+    logInRef.current();
   }, []);
 
   if (!viewer.didRequest && !error) {
@@ -88,54 +80,54 @@ const App = () => {
       <Layout className='app-skeleton'>
         <AppHeaderSkeleton />
         <div className='app-skeleton__spin-section'>
-          <Spin size='large' tip='launching Tinyhouse' />
+          <Spin size='large' tip='Launching TinyHouse' />
         </div>
       </Layout>
     );
   }
 
-  const logInErrorBannerElement = error && (
-    <ErrorBanner description='we were not able to verify if you were logged in. Pleas try agan' />
-  );
+  const logInErrorBannerElement = error ? (
+    <ErrorBanner description="We weren't able to verify if you were logged in. Please try again later!" />
+  ) : null;
   return (
     <BrowserRouter>
-      {logInErrorBannerElement}
       <Layout id='app'>
+        {logInErrorBannerElement}
         <Affix offsetTop={0} className='app__affix-header'>
           <AppHeader viewer={viewer} setViewer={setViewer} />
         </Affix>
-        <Switch>
-          <Route exact path='/' component={Home} />
-          <Route exact path='/host' component={Host} />
+        <Routes>
+          <Route path='/' element={<Home />} />
+          <Route path='/host' element={<Host />} />
+          <Route path='/listing/:listingId' element={<Listing />} />
           <Route
-            exact
-            path='/login'
-            render={props => <Login {...props} setViewer={setViewer} />}
-          />
-          <Route exact path='/listing/:id' component={Listing} />
-          <Route exact path='/listing/:location?' component={Listings} />
-          <Route
-            exact
-            path='/user/:id'
-            render={props => <User {...props} viewer={viewer} />}
-          />
-          <Route component={NotFound} />
-        </Switch>
+            path='/listings'
+            element={<Listings title='TinyHouse Listings' />}
+          >
+            <Route
+              path='/listings/:location'
+              element={<Listings title='TinyHouse Listings' />}
+            />
+          </Route>
+          <Route path='/login' element={<Login setViewer={setViewer} />} />
+          <Route path='/user/:userId' element={<User viewer={viewer} />} />
+          <Route path='*' element={<NotFound />} />
+        </Routes>
       </Layout>
     </BrowserRouter>
   );
-};
+}
 
-ReactDOM.render(
-  <React.StrictMode>
+render(
+  <>
     <ApolloProvider client={client}>
       <App />
     </ApolloProvider>
-  </React.StrictMode>,
+  </>,
   document.getElementById('root')
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+// If you want your app to work offline and load faster, you can change
+// unregister() to register() below. Note this comes with some pitfalls.
+// Learn more about service workers: https://bit.ly/CRA-PWA
+// serviceWorker.unregister();

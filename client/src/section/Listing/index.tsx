@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client';
 import { useState } from 'react';
 import { Moment } from 'moment';
-import { RouteComponentProps } from 'react-router';
+import { useParams } from 'react-router';
 import { Layout, Col, Row } from 'antd';
 
 import { PageSkeleton, ErrorBanner } from '../../lib/components';
@@ -25,16 +25,18 @@ const PAGE_LIMIT = 4;
 
 const { Content } = Layout;
 
-export const Listing = ({ match }: RouteComponentProps<MatchParams>) => {
+export const Listing = () => {
   const [bookingsPage, setBookingsPage] = useState(1);
   const [checkInDate, setCheckInDate] = useState<Moment | null>(null);
   const [checkOutDate, setCheckOutDate] = useState<Moment | null>(null);
+
+  const { listingId } = useParams();
 
   const { loading, data, error } = useQuery<ListingData, ListingVariables>(
     LISTING,
     {
       variables: {
-        id: match.params.id,
+        id: listingId ?? '',
         bookingsPage,
         limit: PAGE_LIMIT
       }

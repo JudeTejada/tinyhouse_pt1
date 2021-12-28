@@ -1,5 +1,5 @@
 import { Card, Layout, Typography, Spin } from 'antd';
-import { Redirect } from 'react-router';
+import { Navigate } from 'react-router';
 import { useApolloClient, useMutation } from '@apollo/client';
 import { Viewer } from '../../lib/types';
 import { AUTH_URL } from '../../lib/graphql/queries/AuthUrl/';
@@ -79,7 +79,7 @@ export const Login = ({ setViewer }: Props) => {
   }
   if (logInData && logInData.logIn) {
     const { id: viewerId } = logInData.logIn;
-    return <Redirect to={`/user/${viewerId}`} />;
+    return <Navigate to={`/user/${viewerId}`} />;
   }
 
   const logInErrorBannerElement = logInError && (
